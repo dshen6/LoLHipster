@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:paddingTop="8dp"
+		android:paddingBottom="8dp"
+		android:paddingLeft="@dimen/activity_horizontal_margin"
+		android:paddingRight="@dimen/activity_horizontal_margin">
+
+	<TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+			android:id="@+id/champName"
+			android:textSize="@dimen/font_large"/>
+
+	<TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+			android:id="@+id/role"
+			android:layout_below="@+id/champName"
+			android:textSize="@dimen/font_medium"
+			android:textColor="@color/Gray"
+			/>
+
+	<TextView android:layout_width="44dp" android:layout_height="wrap_content"
+			android:id="@+id/score"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:textSize="@dimen/font_medium"/>
+
+</RelativeLayout>

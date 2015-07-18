@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		tools:context=".MainActivity">
+
+
+	<EditText android:layout_width="match_parent" android:layout_height="40dp"
+			android:id="@+id/summonerName"
+			android:hint="@string/hint.summoner.name"
+			android:imeOptions="actionSearch"
+			android:inputType="textNoSuggestions"
+			android:layout_marginTop="@dimen/activity_vertical_margin"
+			android:layout_marginRight="@dimen/activity_horizontal_margin"
+			android:layout_marginLeft="@dimen/activity_horizontal_margin"
+			/>
+
+	<ProgressBar android:layout_width="26dp" android:layout_height="26dp"
+			android:id="@+id/progressSearch"
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="16dp"
+			android:visibility="gone"
+			android:layout_alignTop="@id/summonerName"/>
+
+	<android.support.v7.widget.RecyclerView android:layout_width="match_parent" android:layout_height="match_parent"
+			android:id="@+id/recyclerView"
+			android:layout_below="@id/summonerName"
+			/>
+
+</RelativeLayout>
