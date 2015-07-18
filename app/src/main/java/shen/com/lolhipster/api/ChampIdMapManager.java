@@ -8,6 +8,7 @@ import com.squareup.moshi.Moshi;
 import dto.Static.Champion;
 import dto.Static.ChampionList;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import main.java.riotapi.RiotApiException;
 import shen.com.lolhipster.LoLHipster;
@@ -50,6 +51,10 @@ public class ChampIdMapManager {
 				Moshi moshi = new Moshi.Builder().build();
 				JsonAdapter<MapOfChampData> jsonAdapter = moshi.adapter(MapOfChampData.class);
 				champNameIdMap = jsonAdapter.fromJson(json);
+			} else {
+				champNameIdMap = new MapOfChampData();
+				champNameIdMap.setChampIdNameMap(new HashMap<Integer, String>());
+				champNameIdMap.setChampNameIdMap(new HashMap<String, Integer>());
 			}
 		} catch (RiotApiException | IOException e) {
 			e.printStackTrace();
