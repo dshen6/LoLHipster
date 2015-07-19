@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.List;
+import javax.inject.Inject;
 import shen.com.lolhipster.R;
 import shen.com.lolhipster.api.ChampIdMapManager;
 import shen.com.lolhipster.api.models.ChampionRoleScore;
@@ -18,11 +19,14 @@ public class HipsterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 	private static final int VIEW_TYPE_HEADER = 0;
 	private static final int VIEW_TYPE_CHAMPION = 1;
 
+	private final ChampIdMapManager champIdMapManager;
+
 	private List<ChampionRoleScore> championRoleScores;
 	private String averageScore;
 	private String message;
-	public HipsterAdapter(List<ChampionRoleScore> scores) {
-		this.championRoleScores = scores;
+
+	public HipsterAdapter(ChampIdMapManager champIdMapManager) {
+		this.champIdMapManager = champIdMapManager;
 	}
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -40,7 +44,7 @@ public class HipsterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 		if (holder instanceof ChampViewHolder) {
 			ChampViewHolder champViewHolder = (ChampViewHolder) holder;
 			ChampionRoleScore championRoleScore = championRoleScores.get(getItemCount() - position - 1);
-			String champName = ChampIdMapManager.getInstance().NameForId(championRoleScore.champId);
+			String champName = champIdMapManager.NameForId(championRoleScore.champId);
 			champViewHolder.champName.setText(champName);
 			champViewHolder.champRole.setText(championRoleScore.role);
 			champViewHolder.hipsterScore.setText(championRoleScore.score + "");
@@ -90,6 +94,7 @@ public class HipsterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 	public static class HeaderHolder extends RecyclerView.ViewHolder {
 		public TextView averageScore;
 		public TextView message;
+
 		public HeaderHolder(View view) {
 			super(view);
 			averageScore = (TextView) view.findViewById(R.id.averageScore);

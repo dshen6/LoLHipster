@@ -1,34 +1,35 @@
 package shen.com.lolhipster.api;
 
+import android.content.Context;
 import com.opencsv.CSVReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import shen.com.lolhipster.api.models.ChampionAndRole;
-import shen.com.lolhipster.LoLHipster;
+import shen.com.lolhipster.ui.LoLHipsterApplication;
 
 /**
  * Created by cfalc on 7/5/15.
  */
+@Singleton
 public class PopularityMap {
 
 	private static final String CSV_FILE = "AllChampPopularity.csv";
 	private static final String TAG = PopularityMap.class.getSimpleName();
 
-	private static PopularityMap instance;
-
 	private static final int MAX_HIPSTER_LEVEL = 100; // equivalent to 3 warby parkers, 30 plaid shirts, or 300 flat-whites
 	private HashMap<ChampionAndRole, Float> champRoles;
 
-	public static PopularityMap getInstance() {
-		if (instance == null) {
-			instance = new PopularityMap();
-		}
-		return instance;
-	}
+	private final Context appContext;
+	private final ChampIdMapManager champIdMapManager;
 
-	public PopularityMap() {
+	@Inject
+	public PopularityMap(Context context, ChampIdMapManager champIdMapManager) {
+		this.appContext = context;
+		this.champIdMapManager = champIdMapManager;
 		champRoles = new HashMap<>();
 		try {
 			readCSV();
@@ -38,7 +39,7 @@ public class PopularityMap {
 	}
 
 	private void readCSV() throws IOException {
-		InputStream stream = LoLHipster.appContext.getAssets().open(CSV_FILE);
+		InputStream stream = appContext.getAssets().open(CSV_FILE);
 		CSVReader reader = new CSVReader(new InputStreamReader(stream));
 		String[] nextLine;
 		while ((nextLine = reader.readNext()) != null) {
@@ -50,9 +51,11 @@ public class PopularityMap {
 			String stringPercent = nextLine[2];
 			stringPercent = stringPercent.substring(0, stringPercent.length() - 1);
 			float playPercent = Float.valueOf(stringPercent);
-			int champId = ChampIdMapManager.getInstance().IdForName(name);
-			ChampionAndRole championAndRole = new ChampionAndRole(champId, role);
-			champRoles.put(championAndRole, playPercent);
+			Integer champId = champIdMapManager.IdForName(name);
+			if (champId != null) {
+				ChampionAndRole championAndRole = new ChampionAndRole(champId, role);
+				champRoles.put(championAndRole, playPercent);
+			}
 		}
 	}
 

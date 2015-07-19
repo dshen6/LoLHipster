@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -16,17 +15,33 @@ import android.widget.TextView;
 import java.util.List;
 import main.java.riotapi.RiotApiException;
 import shen.com.lolhipster.R;
+import shen.com.lolhipster.api.ChampIdMapManager;
+import shen.com.lolhipster.api.DaggerHipsterApiComponent;
 import shen.com.lolhipster.api.HipsterApi;
 import shen.com.lolhipster.api.models.ChampionRoleScore;
+import shen.com.lolhipster.api.HipsterApiComponent;
+import util.DividerItemDecoration;
+import util.ErrorDialogFragment;
+import util.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
 	private HipsterAdapter adapter;
 	private ProgressBar progressSearch;
+	HipsterApi hipsterApi;
+	ChampIdMapManager champIdMapManager;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		HipsterApiComponent hipsterApiComponent = DaggerHipsterApiComponent.builder()
+				.applicationModule(new ApplicationModule(getApplication()))
+				.build();
+
+		hipsterApi = hipsterApiComponent.hipsterApi();
+		champIdMapManager = hipsterApiComponent.champIdMapManager();
+
 		final EditText summonerNameInput = (EditText) findViewById(R.id.summonerName);
 		progressSearch = (ProgressBar) findViewById(R.id.progressSearch);
 		summonerNameInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -43,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 		RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 		RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 		recyclerView.setLayoutManager(layoutManager);
-		adapter = new HipsterAdapter(null);
+		adapter = new HipsterAdapter(champIdMapManager);
 		Drawable divider = getResources().getDrawable(R.drawable.divider_list_item);
 		recyclerView.addItemDecoration(new DividerItemDecoration(divider, false, false));
 		recyclerView.setAdapter(adapter);
@@ -57,12 +72,11 @@ public class MainActivity extends AppCompatActivity {
 					return null;
 				}
 				try {
-					List<ChampionRoleScore> championRoleScoreList =
-							HipsterApi.getInstance().getHipsterScoresForSummoner(params[0]);
+					List<ChampionRoleScore> championRoleScoreList = hipsterApi.getHipsterScoresForSummoner(params[0]);
 					adapter.setData(championRoleScoreList);
 					displayMessageForSummoner(championRoleScoreList, name);
 				} catch (RiotApiException e) {
-					ErrorDialogFragment.newInstance(getString(R.string.error_querying))
+					ErrorDialogFragment.newInstance(e.getMessage())
 							.show(getFragmentManager(), ErrorDialogFragment.FRAG_TAG);
 				} finally {
 					runOnUiThread(new Runnable() {

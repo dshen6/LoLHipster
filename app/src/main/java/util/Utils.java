@@ -1,4 +1,4 @@
-package shen.com.lolhipster.ui;
+package util;
 
 import android.support.annotation.StringRes;
 import java.util.ArrayList;

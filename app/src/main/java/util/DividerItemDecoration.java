@@ -1,4 +1,4 @@
-package shen.com.lolhipster.ui;
+package util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
