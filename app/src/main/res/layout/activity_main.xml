@@ -22,6 +22,7 @@
 	<EditText android:layout_width="match_parent" android:layout_height="44dp"
 			android:layout_below="@id/prompt"
 			android:id="@+id/summonerName"
+			android:textSize="@dimen/font_large"
 			android:gravity="center"
 			android:hint="@string/hint.summoner.name"
 			android:imeOptions="actionSearch"
