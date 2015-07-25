@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 	@Bind(R.id.summonerName) EditText nameInput;
 	@Bind(R.id.recyclerView) RecyclerView recyclerView;
 	@Bind(R.id.space) View space;
+	@Bind(R.id.legal) View legal;
 
 	@OnClick(R.id.legal) void displayLegal() {
 		ErrorDialogFragment.newInstance(getString(R.string.legal_jargon))
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 						RESIZE_TO_ZERO.apply(space, 0);
 					}
 				}
+				legal.setVisibility(yDelta > 0 ? View.GONE : View.VISIBLE);
 			}
 		});
 	}
