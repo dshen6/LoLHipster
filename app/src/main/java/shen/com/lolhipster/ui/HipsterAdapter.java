@@ -1,15 +1,18 @@
 package shen.com.lolhipster.ui;
 
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import java.util.List;
-import javax.inject.Inject;
 import shen.com.lolhipster.R;
 import shen.com.lolhipster.api.ChampIdMapManager;
 import shen.com.lolhipster.api.models.ChampionRoleScore;
+import util.Utils;
 
 /**
  * Created by cfalc on 7/6/15.
@@ -24,9 +27,11 @@ public class HipsterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 	private List<ChampionRoleScore> championRoleScores;
 	private String averageScore;
 	private String message;
+	private Resources res;
 
-	public HipsterAdapter(ChampIdMapManager champIdMapManager) {
+	public HipsterAdapter(ChampIdMapManager champIdMapManager, Resources res) {
 		this.champIdMapManager = champIdMapManager;
+		this.res = res;
 	}
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -69,36 +74,42 @@ public class HipsterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 		return VIEW_TYPE_CHAMPION;
 	}
 
-	public void setData(List<ChampionRoleScore> data) {
+	public void setData(List<ChampionRoleScore> data, String name) {
 		this.championRoleScores = data;
+		displayMessageForSummoner(data, name);
 	}
 
-	public void setHeader(String score, String message) {
+	private void displayMessageForSummoner(List<ChampionRoleScore> scores, String name) {
+		int average = (int) Utils.calculateAverage(scores);
+		String message = res.getString(Utils.StringForAverage(average));
+		String score = String.format(res.getString(R.string.score_out_of_hundred), average);
+		message = String.format(message, name);
+		setHeader(score, message);
+	}
+
+	private void setHeader(String score, String message) {
 		this.averageScore = score;
 		this.message = message;
 	}
 
 	public static class ChampViewHolder extends RecyclerView.ViewHolder {
-		public TextView champName;
-		public TextView champRole;
-		public TextView hipsterScore;
+		@Bind(R.id.champName) TextView champName;
+		@Bind(R.id.role) TextView champRole;
+		@Bind(R.id.score) TextView hipsterScore;
 
 		public ChampViewHolder(View view) {
 			super(view);
-			champName = (TextView) view.findViewById(R.id.champName);
-			champRole = (TextView) view.findViewById(R.id.role);
-			hipsterScore = (TextView) view.findViewById(R.id.score);
+			ButterKnife.bind(this, view);
 		}
 	}
 
 	public static class HeaderHolder extends RecyclerView.ViewHolder {
-		public TextView averageScore;
-		public TextView message;
+		@Bind(R.id.averageScore) TextView averageScore;
+		@Bind(R.id.message) TextView message;
 
 		public HeaderHolder(View view) {
 			super(view);
-			averageScore = (TextView) view.findViewById(R.id.averageScore);
-			message = (TextView) view.findViewById(R.id.message);
+			ButterKnife.bind(this, view);
 		}
 	}
 }

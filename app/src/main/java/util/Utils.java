@@ -2,13 +2,26 @@ package util;
 
 import android.support.annotation.StringRes;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import shen.com.lolhipster.R;
+import shen.com.lolhipster.api.models.ChampionRoleScore;
 
 /**
  * Created by cfalc on 7/15/15.
  */
 public class Utils {
+
+	public static float calculateAverage(List<ChampionRoleScore> scores) {
+		if (scores.size() == 0) {
+			return 0;
+		}
+		float sum = 0;
+		for (ChampionRoleScore score : scores) {
+			sum += score.score;
+		}
+		return sum / scores.size();
+	}
 
 	public static @StringRes int StringForAverage(float average){
 		ArrayList<Integer> possibleStrings = new ArrayList<>();
