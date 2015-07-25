@@ -1,5 +1,7 @@
 package shen.com.lolhipster.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,9 +10,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Space;
 import android.widget.TextView;
 import java.util.List;
 import main.java.riotapi.RiotApiException;
@@ -22,14 +27,17 @@ import shen.com.lolhipster.api.models.ChampionRoleScore;
 import shen.com.lolhipster.api.HipsterApiComponent;
 import util.DividerItemDecoration;
 import util.ErrorDialogFragment;
+import util.ResizeAnimation;
+import util.ResizeAwareRelativeLayout;
 import util.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
 	private HipsterAdapter adapter;
 	private ProgressBar progressSearch;
-	HipsterApi hipsterApi;
-	ChampIdMapManager champIdMapManager;
+	private HipsterApi hipsterApi;
+	private ChampIdMapManager champIdMapManager;
+	boolean animated;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,6 +70,29 @@ public class MainActivity extends AppCompatActivity {
 		Drawable divider = getResources().getDrawable(R.drawable.divider_list_item);
 		recyclerView.addItemDecoration(new DividerItemDecoration(divider, false, false));
 		recyclerView.setAdapter(adapter);
+
+		final Space space = (Space) findViewById(R.id.space);
+
+		final ResizeAwareRelativeLayout container = (ResizeAwareRelativeLayout) findViewById(R.id.container);
+		container.setOnResizeListener(new ResizeAwareRelativeLayout.RelativeLayoutOnResizeListener() {
+			@Override public void onResize(int x, int y, int xOld, int yOld) {
+				if (y == 0 || yOld == 0) { // ignore if we're just starting up
+					return;
+				}
+
+				int yDelta = yOld - y; // if positive, means keyboard grew, negative means keyboard shrank
+				if (yDelta > 0) {
+					if (!animated) {
+						animated = true;
+						Animation scale = new ResizeAnimation(space, 0);
+						scale.setInterpolator(new DecelerateInterpolator());
+						scale.setDuration(400);
+						scale.setFillAfter(true);
+						space.startAnimation(scale);
+					}
+				}
+			}
+		});
 	}
 
 	private void searchSummoner(final String name) {

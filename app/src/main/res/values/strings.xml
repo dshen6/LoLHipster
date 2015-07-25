@@ -1,7 +1,9 @@
 <resources>
 	<string name="app_name">LoLHipster</string>
+	<string name="prompt">Find out how hipster you are.</string>
 	<string name="hint.summoner.name">Summoner Name</string>
-	<string name="score.out.of.hundred">%d/100</string>
+
+	<string name="score.out.of.hundred">Hipster Score: %d/100</string>
 	<string name="over.seventy.message.one">"\"%s doesn't believe in \'roles\'.\" \n - Jinx"</string>
 	<string name="over.seventy.message.two">"\"They hate us cause they ain't us.\" \n - Draven"</string>
 	<string name="over.seventy.message.three">\"%s. You fabulous unicorn.\" \n - Hecarim</string>
