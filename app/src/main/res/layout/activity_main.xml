@@ -43,6 +43,15 @@
 	<android.support.v7.widget.RecyclerView android:layout_width="match_parent" android:layout_height="match_parent"
 			android:id="@+id/recyclerView"
 			android:layout_below="@id/summonerName"
+			android:layout_above="@+id/legal"
 			/>
+
+	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:id="@+id/legal"
+			android:layout_marginBottom="@dimen/activity_vertical_margin"
+			android:text="Legal"
+			android:textSize="@dimen/font_small"
+			android:layout_centerHorizontal="true"
+			android:layout_alignParentBottom="true"/>
 
 </util.ResizeAwareRelativeLayout>

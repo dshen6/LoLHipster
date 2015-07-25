@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import java.util.List;
 import main.java.riotapi.RiotApiException;
@@ -35,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
 	@Bind(R.id.summonerName) EditText nameInput;
 	@Bind(R.id.recyclerView) RecyclerView recyclerView;
 	@Bind(R.id.space) View space;
+
+	@OnClick(R.id.legal) void displayLegal() {
+		ErrorDialogFragment.newInstance(getString(R.string.legal_jargon))
+				.show(getFragmentManager(), ErrorDialogFragment.FRAG_TAG);
+	}
 
 	@OnEditorAction(R.id.summonerName) boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		boolean handled = false;
@@ -117,5 +123,4 @@ public class MainActivity extends AppCompatActivity {
 			}
 		}.execute(name);
 	}
-
 }
