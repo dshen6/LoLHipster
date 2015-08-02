@@ -30,7 +30,8 @@
 
 	<string name="error.querying">"Error querying, please check your internet connection."</string>
 
+	<string name="powered.by.champion.gg">"Powered by champion.gg"</string>
 
-	<string name="legal_jargon">"LoLHipster isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc."
+	<string name="legal.jargon">"LoLHipster isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc."
 	</string>
 </resources>

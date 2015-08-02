@@ -1,6 +1,8 @@
 package shen.com.lolhipster.ui;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +39,14 @@ public class MainActivity extends AppCompatActivity {
 	@Bind(R.id.recyclerView) RecyclerView recyclerView;
 	@Bind(R.id.space) View space;
 	@Bind(R.id.legal) View legal;
+	@Bind(R.id.poweredBy) View poweredBy;
+
+	@OnClick(R.id.poweredBy) void routeToChampionGG() {
+		String url = "http://champion.gg";
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setData(Uri.parse(url));
+		startActivity(intent);
+	}
 
 	@OnClick(R.id.legal) void displayLegal() {
 		ErrorDialogFragment.newInstance(getString(R.string.legal_jargon))
@@ -97,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
 					}
 				}
 				legal.setVisibility(yDelta > 0 ? View.GONE : View.VISIBLE);
+				poweredBy.setVisibility(yDelta > 0 ? View.GONE : View.VISIBLE);
 			}
 		});
 	}
