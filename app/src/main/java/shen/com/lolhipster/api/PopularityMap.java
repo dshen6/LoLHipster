@@ -76,6 +76,16 @@ import shen.com.lolhipster.api.models.ChampionAndRole;
 	}
 
 	private int popularityScoreForPlayPercent(float x) {
+		// using http://www.had2know.com/academics/quadratic-regression-calculator.html with following values:
+		// (42, 10)
+		// (28, 20)
+		// (22.5, 30)
+		// (17, 40)
+		// (13, 50)
+		// (10, 60)
+		// (7, 70)
+		// (3.5, 80)
+		// (1, 90)
 		return (int) (0.0434 * (x * x) - 3.8208 * x + 93.8513);
 	}
 }
