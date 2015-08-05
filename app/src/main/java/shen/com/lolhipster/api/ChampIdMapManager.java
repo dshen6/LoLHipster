@@ -8,7 +8,6 @@ import com.squareup.moshi.Moshi;
 import dto.Static.Champion;
 import dto.Static.ChampionList;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,6 +25,7 @@ import shen.com.lolhipster.api.models.MapOfChampData;
 	private static final int SHARED_PREF_FIRST_VERSION = 1;
 
 	private MapOfChampData champNameIdMap = new MapOfChampData();
+	private ChampIdsUpdatedDelegate delegate;
 
 	private final RiotApiWrapper riotApiWrapper;
 	private final SharedPreferences preferences;
@@ -35,21 +35,15 @@ import shen.com.lolhipster.api.models.MapOfChampData;
 		this.preferences = sharedPreferences;
 
 		int localVersion = preferences.getInt(SHARED_PREF_VERSION_KEY, SHARED_PREF_FIRST_VERSION);
+		String json = preferences.getString(SHARED_PREF_DATA_KEY, null);
 
-		boolean queryServer = localVersion != SHARED_PREF_VERSION_VALUE;
+		boolean queryServer = localVersion != SHARED_PREF_VERSION_VALUE || json == null;
+		if (queryServer) {
+			getAllChampIdsFromServer();
+		}
 		try {
-			String json = preferences.getString(SHARED_PREF_DATA_KEY, null);
-			if (json == null || !queryServer) {
-				getAllChampIdsFromServer();
-			}
 			if (json != null) {
-				Moshi moshi = new Moshi.Builder().build();
-				JsonAdapter<MapOfChampData> jsonAdapter = moshi.adapter(MapOfChampData.class);
-				champNameIdMap = jsonAdapter.fromJson(json);
-			} else {
-				champNameIdMap = new MapOfChampData();
-				champNameIdMap.setChampIdNameMap(new HashMap<Integer, String>());
-				champNameIdMap.setChampNameIdMap(new HashMap<String, Integer>());
+				populateFromJson(json);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,12 +60,24 @@ import shen.com.lolhipster.api.models.MapOfChampData;
 		return champNameIdMap.getChampIdNameMap().get(id);
 	}
 
+	private void populateFromJson(String json) throws IOException {
+		Moshi moshi = new Moshi.Builder().build();
+		JsonAdapter<MapOfChampData> jsonAdapter = moshi.adapter(MapOfChampData.class);
+		champNameIdMap = jsonAdapter.fromJson(json);
+	}
+
+	private void writeToJson() throws IOException {
+		Moshi moshi = new Moshi.Builder().build();
+		JsonAdapter<MapOfChampData> jsonAdapter = moshi.adapter(MapOfChampData.class);
+		String json = jsonAdapter.toJson(champNameIdMap);
+		preferences.edit().putString(SHARED_PREF_DATA_KEY, json).commit();
+	}
+
 	private void getAllChampIdsFromServer() {
-		new AsyncTask<Void, String, String>() {
-			@Override protected String doInBackground(Void... params) {
-				ChampionList championList = null;
+		new AsyncTask<Void, Void, Void>() {
+			@Override protected Void doInBackground(Void... params) {
 				try {
-					championList = riotApiWrapper.getDataChampionList();
+					ChampionList championList = riotApiWrapper.getDataChampionList();
 					Map<String, Champion> data = championList.getData();
 					for (Object key : data.keySet()) {
 						Champion champion = data.get(key);
@@ -80,29 +86,23 @@ import shen.com.lolhipster.api.models.MapOfChampData;
 						champNameIdMap.getChampNameIdMap().put(name, id);
 						champNameIdMap.getChampIdNameMap().put(id, name);
 					}
-					Moshi moshi = new Moshi.Builder().build();
-					JsonAdapter<MapOfChampData> jsonAdapter = moshi.adapter(MapOfChampData.class);
-					String json = jsonAdapter.toJson(champNameIdMap);
-					preferences.edit().putString(SHARED_PREF_DATA_KEY, json).commit();
-					return json;
+					writeToJson();
+					if (delegate != null) {
+						delegate.onChampIdsChange();
+					}
 				} catch (RiotApiException | IOException e) {
 					e.printStackTrace();
 				}
 				return null;
 			}
-
-			@Override protected void onPostExecute(String json) {
-				super.onPostExecute(json);
-				if (json != null) {
-					Moshi moshi = new Moshi.Builder().build();
-					JsonAdapter<MapOfChampData> jsonAdapter = moshi.adapter(MapOfChampData.class);
-					try {
-						champNameIdMap = jsonAdapter.fromJson(json);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
 		}.execute();
+	}
+
+	public void setDelegate(ChampIdsUpdatedDelegate delegate) {
+		this.delegate = delegate;
+	}
+
+	public interface ChampIdsUpdatedDelegate {
+		void onChampIdsChange();
 	}
 }

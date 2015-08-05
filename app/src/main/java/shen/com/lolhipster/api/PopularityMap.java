@@ -9,54 +9,56 @@ import java.util.HashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import shen.com.lolhipster.api.models.ChampionAndRole;
-import shen.com.lolhipster.ui.LoLHipsterApplication;
 
 /**
  * Created by cfalc on 7/5/15.
  */
-@Singleton
-public class PopularityMap {
+@Singleton public class PopularityMap implements ChampIdMapManager.ChampIdsUpdatedDelegate {
 
 	private static final String CSV_FILE = "AllChampPopularity.csv";
 	private static final String TAG = PopularityMap.class.getSimpleName();
 
-	private static final int MAX_HIPSTER_LEVEL = 100; // equivalent to 3 warby parkers, 30 plaid shirts, or 300 flat-whites
-	private HashMap<ChampionAndRole, Float> champRoles;
+	private static final int MAX_HIPSTER_LEVEL = 100;
+	// equivalent to 3 warby parkers, 30 plaid shirts, or 300 flat-whites
+	private HashMap<ChampionAndRole, Float> champRoles = new HashMap<>();
 
 	private final Context appContext;
 	private final ChampIdMapManager champIdMapManager;
 
-	@Inject
-	public PopularityMap(Context context, ChampIdMapManager champIdMapManager) {
+	@Inject public PopularityMap(Context context, ChampIdMapManager champIdMapManager) {
 		this.appContext = context;
 		this.champIdMapManager = champIdMapManager;
-		champRoles = new HashMap<>();
+		champIdMapManager.setDelegate(this);
+		readCSV();
+	}
+
+	private void readCSV() {
 		try {
-			readCSV();
+			InputStream stream = appContext.getAssets().open(CSV_FILE);
+			CSVReader reader = new CSVReader(new InputStreamReader(stream));
+			String[] nextLine;
+			while ((nextLine = reader.readNext()) != null) {
+				if (nextLine.length != 3) {
+					continue;
+				}
+				String name = nextLine[0];
+				String role = nextLine[1];
+				String stringPercent = nextLine[2];
+				stringPercent = stringPercent.substring(0, stringPercent.length() - 1);
+				float playPercent = Float.valueOf(stringPercent);
+				Integer champId = champIdMapManager.IdForName(name);
+				if (champId != null) {
+					ChampionAndRole championAndRole = new ChampionAndRole(champId, role);
+					champRoles.put(championAndRole, playPercent);
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void readCSV() throws IOException {
-		InputStream stream = appContext.getAssets().open(CSV_FILE);
-		CSVReader reader = new CSVReader(new InputStreamReader(stream));
-		String[] nextLine;
-		while ((nextLine = reader.readNext()) != null) {
-			if (nextLine.length != 3) {
-				continue;
-			}
-			String name = nextLine[0];
-			String role = nextLine[1];
-			String stringPercent = nextLine[2];
-			stringPercent = stringPercent.substring(0, stringPercent.length() - 1);
-			float playPercent = Float.valueOf(stringPercent);
-			Integer champId = champIdMapManager.IdForName(name);
-			if (champId != null) {
-				ChampionAndRole championAndRole = new ChampionAndRole(champId, role);
-				champRoles.put(championAndRole, playPercent);
-			}
-		}
+	@Override public void onChampIdsChange() {
+		readCSV();
 	}
 
 	public int popularityScoreForChampionAndRole(ChampionAndRole championAndRole) {
@@ -74,7 +76,6 @@ public class PopularityMap {
 	}
 
 	private int popularityScoreForPlayPercent(float x) {
-		return (int) (0.0434*(x*x) - 3.8208*x + 93.8513);
+		return (int) (0.0434 * (x * x) - 3.8208 * x + 93.8513);
 	}
-
 }

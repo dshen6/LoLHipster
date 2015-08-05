@@ -1,13 +1,13 @@
 package shen.com.lolhipster.ui;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -57,7 +57,12 @@ public class MainActivity extends AppCompatActivity {
 		boolean handled = false;
 		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 			handled = true;
-			searchSummoner(nameInput.getText().toString().trim());
+			if (TextUtils.isEmpty(nameInput.getText())) {
+				nameInput.setError(getString(R.string.error_empty_input));
+			} else {
+				nameInput.setError(null);
+				searchSummoner(nameInput.getText().toString().trim());
+			}
 		}
 		return handled;
 	}
@@ -86,54 +91,65 @@ public class MainActivity extends AppCompatActivity {
 
 		hipsterApi = hipsterApiComponent.hipsterApi();
 
-		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		adapter = new HipsterAdapter(hipsterApiComponent.champIdMapManager(), getResources());
-		Drawable divider = getResources().getDrawable(R.drawable.divider_list_item);
-		recyclerView.addItemDecoration(new DividerItemDecoration(divider, false, false));
+		recyclerView.addItemDecoration(
+				new DividerItemDecoration(getResources().getDrawable(R.drawable.divider_list_item), false, false));
+		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		recyclerView.setAdapter(adapter);
 
 		final ResizeAwareRelativeLayout container = (ResizeAwareRelativeLayout) findViewById(R.id.container);
-		container.setOnResizeListener(new ResizeAwareRelativeLayout.RelativeLayoutOnResizeListener() {
-			@Override public void onResize(int x, int y, int xOld, int yOld) {
-				if (y == 0 || yOld == 0) { // ignore if we're just starting up
-					return;
-				}
-
-				int yDelta = yOld - y; // if positive, means keyboard grew, negative means keyboard shrank
-				if (yDelta > 0) {
-					if (!animated) {
-						animated = true;
-						RESIZE_TO_ZERO.apply(space, 0);
-					}
-				}
-				legal.setVisibility(yDelta > 0 ? View.GONE : View.VISIBLE);
-				poweredBy.setVisibility(yDelta > 0 ? View.GONE : View.VISIBLE);
-			}
-		});
+		container.setOnResizeListener(new ResizeAwareListener());
 	}
 
 	private void searchSummoner(final String name) {
 		progressSearch.setVisibility(View.VISIBLE);
-		new AsyncTask<String, Void, Void>() {
-			@Override protected Void doInBackground(String... params) {
+		new AsyncTask<String, List<ChampionRoleScore>, List<ChampionRoleScore>>() {
+			@Override protected List<ChampionRoleScore> doInBackground(String... params) {
 				if (params.length < 1) {
 					return null;
 				}
+				String summonerName = params[0];
 				try {
-					List<ChampionRoleScore> championRoleScoreList = hipsterApi.getHipsterScoresForSummoner(params[0]);
-					adapter.setData(championRoleScoreList, name);
+					return hipsterApi.getHipsterScoresForSummoner(summonerName);
 				} catch (RiotApiException e) {
 					ErrorDialogFragment.newInstance(e.getMessage()).show(getFragmentManager(), ErrorDialogFragment.FRAG_TAG);
-				} finally {
-					runOnUiThread(new Runnable() {
-						@Override public void run() {
-							adapter.notifyDataSetChanged();
-							progressSearch.setVisibility(View.GONE);
-						}
-					});
 				}
 				return null;
 			}
+
+			@Override protected void onPostExecute(List<ChampionRoleScore> championRoleScoreList) {
+				if (championRoleScoreList != null) {
+					adapter.setData(championRoleScoreList, name);
+					adapter.notifyDataSetChanged();
+				}
+				progressSearch.setVisibility(View.GONE);
+			}
 		}.execute(name);
+	}
+
+	private final class ResizeAwareListener extends ResizeAwareRelativeLayout.RelativeLayoutOnResizeListener {
+		@Override public void onResize(int x, int y, int xOld, int yOld) {
+			if (y == 0 || yOld == 0) { // ignore if we're just starting up
+				return;
+			}
+
+			final int yDelta = yOld - y; // if positive, means keyboard grew, negative means keyboard shrank
+			if (yDelta > 0) {
+				if (!animated) {
+					animated = true;
+					RESIZE_TO_ZERO.apply(space, 0);
+				}
+			}
+			legal.post(new Runnable() {
+				@Override public void run() {
+					legal.setVisibility(yDelta > 0 ? View.GONE : View.VISIBLE);
+				}
+			});
+			poweredBy.post(new Runnable() {
+				@Override public void run() {
+					poweredBy.setVisibility(yDelta > 0 ? View.GONE : View.VISIBLE);
+				}
+			});
+		}
 	}
 }

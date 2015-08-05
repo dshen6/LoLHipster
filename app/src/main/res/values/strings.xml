@@ -29,6 +29,7 @@
 	<string name="less.forty.message.two">"\"You… are a scourge upon the world.\" \n - Cho'Gath"</string>
 
 	<string name="error.querying">"Error querying, please check your internet connection."</string>
+	<string name="error.empty.input">"Can't be empty"</string>
 
 	<string name="powered.by.champion.gg">"Powered by champion.gg"</string>
 
