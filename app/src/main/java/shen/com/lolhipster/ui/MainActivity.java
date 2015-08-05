@@ -41,42 +41,6 @@ public class MainActivity extends AppCompatActivity {
 	@Bind(R.id.legal) View legal;
 	@Bind(R.id.poweredBy) View poweredBy;
 
-	@OnClick(R.id.poweredBy) void routeToChampionGG() {
-		String url = "http://champion.gg";
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setData(Uri.parse(url));
-		startActivity(intent);
-	}
-
-	@OnClick(R.id.legal) void displayLegal() {
-		ErrorDialogFragment.newInstance(getString(R.string.legal_jargon))
-				.show(getFragmentManager(), ErrorDialogFragment.FRAG_TAG);
-	}
-
-	@OnEditorAction(R.id.summonerName) boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		boolean handled = false;
-		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-			handled = true;
-			if (TextUtils.isEmpty(nameInput.getText())) {
-				nameInput.setError(getString(R.string.error_empty_input));
-			} else {
-				nameInput.setError(null);
-				searchSummoner(nameInput.getText().toString().trim());
-			}
-		}
-		return handled;
-	}
-
-	private static final ButterKnife.Action<View> RESIZE_TO_ZERO = new ButterKnife.Action<View>() {
-		@Override public void apply(View view, int index) {
-			Animation scale = new ResizeAnimation(view, 0);
-			scale.setInterpolator(new DecelerateInterpolator());
-			scale.setDuration(400);
-			scale.setFillAfter(true);
-			view.startAnimation(scale);
-		}
-	};
-
 	private HipsterApi hipsterApi;
 	private HipsterAdapter adapter;
 	private boolean animated;
@@ -152,4 +116,40 @@ public class MainActivity extends AppCompatActivity {
 			});
 		}
 	}
+
+	@OnClick(R.id.poweredBy) void routeToChampionGG() {
+		String url = "http://champion.gg";
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setData(Uri.parse(url));
+		startActivity(intent);
+	}
+
+	@OnClick(R.id.legal) void displayLegal() {
+		ErrorDialogFragment.newInstance(getString(R.string.legal_jargon))
+				.show(getFragmentManager(), ErrorDialogFragment.FRAG_TAG);
+	}
+
+	@OnEditorAction(R.id.summonerName) boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		boolean handled = false;
+		if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+			handled = true;
+			if (TextUtils.isEmpty(nameInput.getText())) {
+				nameInput.setError(getString(R.string.error_empty_input));
+			} else {
+				nameInput.setError(null);
+				searchSummoner(nameInput.getText().toString().trim());
+			}
+		}
+		return handled;
+	}
+
+	private static final ButterKnife.Action<View> RESIZE_TO_ZERO = new ButterKnife.Action<View>() {
+		@Override public void apply(View view, int index) {
+			Animation scale = new ResizeAnimation(view, 0);
+			scale.setInterpolator(new DecelerateInterpolator());
+			scale.setDuration(400);
+			scale.setFillAfter(true);
+			view.startAnimation(scale);
+		}
+	};
 }

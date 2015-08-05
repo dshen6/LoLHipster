@@ -4,29 +4,29 @@
 	<string name="hint.summoner.name">Summoner Name</string>
 
 	<string name="score.out.of.hundred">Avg Hipster Score: %d/100</string>
-	<string name="over.seventy.message.one">"\"%s doesn't believe in \'roles\'.\" \n - Jinx"</string>
-	<string name="over.seventy.message.two">"\"They hate us cause they ain't us.\" \n - Draven"</string>
-	<string name="over.seventy.message.three">\"%s. You fabulous unicorn.\" \n - Hecarim</string>
-	<string name="over.sixty.message.one">\"Raise your what?\" \n - Heimerdinger</string>
-	<string name="over.sixty.message.two">\"We make the future.\" \n - Ekko</string>
-	<string name="over.sixty.message.three">"\"It's all skill!\" \n - Ezreal"</string>
-	<string name="over.sixty.message.four">\"What an uncommon denominator!\" \n - Heimerdinger</string>
-	<string name="over.sixty.message.five">\"Better dead than dull.\" \n - Katarina</string>
-	<string name="over.sixty.message.six">\"I would rather be alive than tryhard.\" \n - Yorick</string>
-	<string name="over.sixty.message.seven">\"Ok\" \n - Rammus</string>
+	<string name="over.seventy.message.one">"%s doesn't believe in \'roles\'. \n - Jinx"</string>
+	<string name="over.seventy.message.two">"They hate us cause they ain't us. \n - Draven"</string>
+	<string name="over.seventy.message.three">%s. You fabulous unicorn. \n - Hecarim</string>
+	<string name="over.sixty.message.one">Raise your what? \n - Heimerdinger</string>
+	<string name="over.sixty.message.two">We make the future. \n - Ekko</string>
+	<string name="over.sixty.message.three">"It's all skill! \n - Ezreal"</string>
+	<string name="over.sixty.message.four">What an uncommon denominator! \n - Heimerdinger</string>
+	<string name="over.sixty.message.five">Better dead than dull. \n - Katarina</string>
+	<string name="over.sixty.message.six">I would rather be alive than tryhard. \n - Yorick</string>
+	<string name="over.sixty.message.seven">Ok \n - Rammus</string>
 
-	<string name="less.sixty.message.one">"\"Just be glad I'm out of bananas\" \n - Soraka"</string>
-	<string name="less.sixty.message.two">\"%s. what a tryhard.\" \n - Tristana</string>
-	<string name="less.sixty.message_three">\"Venture off the beaten path.\" \n -Zyra</string>
-	<string name="less.sixty.message.four">\"BOARRRRING\" \n - Sejuani</string>
-	<string name="less.sixty.message.five">\"Not enough variables… hmm… not nearly enough variables.\" \n -
+	<string name="less.sixty.message.one">"Just be glad I'm out of bananas \n - Soraka"</string>
+	<string name="less.sixty.message.two">%s. what a tryhard. \n - Tristana</string>
+	<string name="less.sixty.message_three">Venture off the beaten path. \n -Zyra</string>
+	<string name="less.sixty.message.four">BOARRRRING \n - Sejuani</string>
+	<string name="less.sixty.message.five">Not enough variables… hmm… not nearly enough variables. \n -
 		Heimerdinger"
 	</string>
-	<string name="less.sixty.message.six">\"Comfort breeds weakness.\" \n -Rengar"</string>
-	<string name="less.sixty.message.seven">"\"Let\'s all judge %s.\" \n - Kayle"</string>
-	<string name="less.sixty.message.eight">\"Come on, live a little… while you can!\" \n - Katarina</string>
-	<string name="less.forty.message.one">"\"They disgust us.\" \n -Kalista"</string>
-	<string name="less.forty.message.two">"\"You… are a scourge upon the world.\" \n - Cho'Gath"</string>
+	<string name="less.sixty.message.six">Comfort breeds weakness. \n -Rengar"</string>
+	<string name="less.sixty.message.seven">"Let\'s all judge %s. \n - Kayle"</string>
+	<string name="less.sixty.message.eight">Come on, live a little… while you can! \n - Katarina</string>
+	<string name="less.forty.message.one">"They disgust us. \n -Kalista"</string>
+	<string name="less.forty.message.two">"You… are a scourge upon the world. \n - Cho'Gath"</string>
 
 	<string name="error.querying">"Error querying, please check your internet connection."</string>
 	<string name="error.empty.input">"Can't be empty"</string>

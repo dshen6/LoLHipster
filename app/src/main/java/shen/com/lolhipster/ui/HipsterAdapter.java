@@ -37,10 +37,10 @@ public class HipsterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 		View view;
 		if (i == 0) {
-			view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_header, null);
+			view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_header, viewGroup, false);
 			return new HeaderHolder(view);
 		} else {
-			view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_champ_hipster, null);
+			view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_champ_hipster, viewGroup, false);
 			return new ChampViewHolder(view);
 		}
 	}
@@ -48,6 +48,7 @@ public class HipsterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 	@Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 		if (holder instanceof ChampViewHolder) {
 			ChampViewHolder champViewHolder = (ChampViewHolder) holder;
+			// because champions are given in reverse order
 			ChampionRoleScore championRoleScore = championRoleScores.get(getItemCount() - position - 1);
 			String champName = champIdMapManager.NameForId(championRoleScore.champId);
 			champViewHolder.champName.setText(champName);
